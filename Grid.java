@@ -15,7 +15,8 @@ public final class Grid {
 	
 	/**
 	 * Creates a grid of the specified size and fills it with random n-digit numbers.
-	 * @param size
+	 * @param size : the number of columms and rows for the specified grid
+	 * @param n : the maximum number of digits that the random integers can have.
 	 */
 	public Grid (int size, int n) throws IllegalArgumentException {
 		
@@ -38,7 +39,7 @@ public final class Grid {
 	
 	/**
 	 * Creates a grid of the specified size and fills it with random 2-digit numbers.
-	 * @param size
+	 * @param size : the number of columms and rows for the specified grid
 	 */
 	public Grid (int size) throws IllegalArgumentException {
 				
@@ -134,7 +135,13 @@ public final class Grid {
 		
 		return true;
 	}
-	
+	/**
+	 * Checks whether the specified row and column are within the bounds of the grid.
+	 * 
+	 * @param row : row index
+	 * @param col : column index
+	 * @return : specifies whether the coordinate is in bounds or not
+	 */
 	private boolean isInGridBounds(int row, int col) {
 		if (row >= this.grid.length || row < 0) {
 			return false;
@@ -302,6 +309,15 @@ public final class Grid {
 		return spiral1(this.grid, spiral1Array, direction);
 	}
 	
+	/**
+	 * The recursive version of the spiral1 method. This will continuously store elements in the list as they are traversed
+	 * and then it will call the spiral method again on the remaining grid.
+	 * 
+	 * @param subGrid : the remaining grid to navigate with the clockwise spiral method
+	 * @param spiral1Array : the stored iterable of all previous elements traversed.
+	 * @param direction : the current direction of grid traversal.
+	 * @return Spiral Array the stored iterable of all elements from the grid, traversed in the clockwise spiral order.
+	 */
 	private Iterable<Integer> spiral1(int[][] subGrid, ArrayList<Integer> spiral1Array, String direction){
 
 		int width = subGrid[0].length;
@@ -410,6 +426,15 @@ public final class Grid {
 		return spiral2(this.grid, spiral2Array, direction);
 	}
 	
+	/**
+	 * The recursive version of the spiral1 method. This will continuously store elements in the list as they are traversed
+	 * and then it will call the spiral method again on the remaining grid.
+	 * 
+	 * @param subGrid : the remaining grid to navigate with the counter-clockwise spiral method
+	 * @param spiral2Array : the stored iterable of all previous elements traversed.
+	 * @param direction : the current direction of grid traversal.
+	 * @return Spiral Array the stored iterable of all elements from the grid, traversed in the counter-clockwise spiral order.
+	 */
 	private Iterable<Integer> spiral2(int[][] subGrid, ArrayList<Integer> spiral2Array, String direction){
 
 		int width = subGrid[0].length;
