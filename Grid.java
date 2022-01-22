@@ -1,27 +1,47 @@
 package a01;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 /**
  * Immutable class that represents a square grid filled with numbers.
  * 
- * @author CSIS-2410 + ......
+ * @author CSIS-2410 + Malcolm Bailey
  *
  */
 public final class Grid {
 	private final int[][] grid;
+	private int size;
 	
 	/**
 	 * Creates a grid of the specified size and fills it with random n-digit numbers.
 	 * @param size
 	 */
-	public Grid (int size, int n) {
-		grid = null; // TODO
+	public Grid (int size, int n) throws IllegalArgumentException {
+		
+		this.size = size;
+		if (size <= 0) {
+			throw new IllegalArgumentException("Array size must be a positive integer");
+		}
+		
+		this.grid = new int[size][size];
+		Random r = new Random();
+		int maxInt = (int) (Math.pow(10, n) - 1);
+		
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				this.grid[i][j] = r.nextInt(maxInt);
+			}
+		}
+		
 	}
 	
 	/**
 	 * Creates a grid of the specified size and fills it with random 2-digit numbers.
 	 * @param size
 	 */
-	public Grid (int size) {
+	public Grid (int size) throws IllegalArgumentException {
+				
 		this(size, 2);
 	}
 	
@@ -30,7 +50,32 @@ public final class Grid {
 	 * @param array2d two-dimensional array of numbers
 	 */
 	public Grid (int[][] array2d) {
-		grid = null; // TODO
+		
+		int row_count;
+		int col_count;
+		
+		if (array2d.length == 0 || array2d[0].length == 0) {
+			throw new IllegalArgumentException("Array passed in must not be size 0 in either dimension");
+		} else {
+			row_count = array2d.length;
+			col_count = array2d[0].length;
+		}
+
+		
+		if (row_count != col_count) {
+			throw new IllegalArgumentException("All grids must be square, meaning they have the "
+					+ "same number of rows and columns");
+		}
+		
+		
+		this.size = array2d.length;
+		this.grid = new int[row_count][col_count];
+		
+		for (int i = 0; i < row_count; i++) {
+			for (int j = 0; j < col_count; j++) {
+				this.grid[i][j] = array2d[i][j];
+			}
+		} 
 	}
 	
 	/**
@@ -70,7 +115,34 @@ public final class Grid {
 	 *         false otherwise
 	 */
 	public boolean largestNeighbor(int i, int j) {
-		return false; // TODO
+
+		int selectedNumber = grid[i][j];
+		int row;
+		int col;
+		
+		for (int x = -1; x <=1; x++) {
+			for (int y = -1; y <= 1; y++) { 
+				row = i + x;
+				col = j + y;
+				
+				if (isInGridBounds(row, col) && grid[i+x][j+y] > selectedNumber) {
+					return false;
+				}
+
+			}
+		}
+		
+		return true;
+	}
+	
+	private boolean isInGridBounds(int row, int col) {
+		if (row >= this.grid.length || row < 0) {
+			return false;
+		} else if (col >= this.grid[0].length || col < 0) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 	/**
@@ -83,7 +155,24 @@ public final class Grid {
 	 *         false otherwise
 	 */
 	public boolean smallestNeighbor(int i, int j) {
-		return false; // TODO
+		
+		int selectedNumber = grid[i][j];
+		int row;
+		int col;
+		
+		for (int x = -1; x <=1; x++) {
+			for (int y = -1; y <= 1; y++) { 
+				row = i + x;
+				col = j + y;
+				
+				if (isInGridBounds(row, col) && grid[i+x][j+y] < selectedNumber) {
+					return false;
+				}
+
+			}
+		}
+		
+		return true;
 	}
 
 	/**
@@ -110,7 +199,26 @@ public final class Grid {
 	 * @return the grid elements in the specified way
 	 */
 	public Iterable<Integer> snake1() {
-		return null; // TODO
+		
+		ArrayList<Integer> snake1Array = new ArrayList<Integer>();
+		int rowCount = 0;
+		for (int i = 0; i < this.grid.length; i ++) {
+			
+			if (rowCount % 2 == 0) {
+				
+				for (int j = 0; j < this.size; j++) {
+					snake1Array.add(grid[i][j]);
+				}
+				
+			} else {
+				for (int j = this.size - 1; j >= 0; j--) {
+					snake1Array.add(grid[i][j]);
+				}
+			}
+			rowCount++;
+		}
+		
+		return snake1Array;
 	}
 
 	/**
@@ -137,7 +245,27 @@ public final class Grid {
 	 * @return the grid elements in the specified way
 	 */
 	public Iterable<Integer> snake2() {
-		return null; // TODO	
+		
+		ArrayList<Integer> snake2Array = new ArrayList<Integer>();
+		int colCount = 0;
+		
+		for (int j = 0; j < size; j ++) {
+			
+			if (colCount % 2 == 0) {
+				
+				for (int i = 0; i < size; i++) {
+					snake2Array.add(grid[i][j]);
+				}
+				
+			} else {
+				for (int i = this.size - 1; i >= 0; i--) {
+					snake2Array.add(grid[i][j]);
+				}
+			}
+			colCount ++;
+		}
+		
+		return snake2Array;
 	}
 	
 	/**
@@ -167,7 +295,85 @@ public final class Grid {
 	 * @return the grid elements in the specified way
 	 */
 	public Iterable<Integer> spiral1() {
-		return null; // TODO
+		
+		ArrayList<Integer> spiral1Array = new ArrayList<Integer>();
+
+		String direction = "right";
+		return spiral1(this.grid, spiral1Array, direction);
+	}
+	
+	private Iterable<Integer> spiral1(int[][] subGrid, ArrayList<Integer> spiral1Array, String direction){
+
+		int width = subGrid[0].length;
+		int height = subGrid.length;
+		int[][] remainingGrid;
+		
+		if (width == 1 && height == 1) {
+			spiral1Array.add(subGrid[0][0]);
+			return spiral1Array;
+		}
+		if (direction.equals("right")){
+			
+			for (int i = 0; i< width; i ++) {
+				spiral1Array.add(subGrid[0][i]);
+				
+			}
+			
+			remainingGrid = new int[height - 1][width];
+			
+			for (int i = 1; i < height; i++) {
+				remainingGrid[i - 1] = subGrid[i];
+			}
+			
+			direction = "down";
+			
+			
+		} else if (direction.equals("left")) {
+			
+			for (int i = width - 1; i >= 0; i --) {
+				spiral1Array.add(subGrid[height - 1][i]);
+			}
+			
+			remainingGrid = new int[height - 1][width];
+			
+			for (int i = 0; i < height - 1; i++) {
+				remainingGrid[i] = subGrid[i];
+			}
+			direction = "up";
+			
+		} else if (direction.equals("up")) {
+			
+			for (int i = height - 1; i >= 0 ; i --) {
+				spiral1Array.add(subGrid[i][0]);
+			}
+			
+			remainingGrid = new int[height][width - 1];
+			
+			for (int i = 0; i < height; i++) {
+				for (int j = 1; j < width; j ++) {
+					remainingGrid[i][j - 1] = subGrid[i][j];
+				}
+				
+			}
+			direction = "right";
+			
+		} else {
+			//direction is down
+			for (int i = 0; i < height ; i ++) {
+				spiral1Array.add(subGrid[i][width - 1]);
+			}
+			
+			remainingGrid = new int[height][width - 1];
+			
+			for (int i = 0; i < height; i++) {
+				for (int j = 0; j < width - 1; j ++) {
+					remainingGrid[i][j] = subGrid[i][j];
+				}
+				
+			}
+			direction = "left";
+		}
+		return spiral1(remainingGrid, spiral1Array, direction);
 	}
 
 	/**
@@ -197,8 +403,86 @@ public final class Grid {
 	 * @return the grid elements in the specified way
 	 */
 	public Iterable<Integer> spiral2() {
-		return null; // TODO	
-	}	
+		
+		ArrayList<Integer> spiral2Array = new ArrayList<Integer>();
+
+		String direction = "down";
+		return spiral2(this.grid, spiral2Array, direction);
+	}
+	
+	private Iterable<Integer> spiral2(int[][] subGrid, ArrayList<Integer> spiral2Array, String direction){
+
+		int width = subGrid[0].length;
+		int height = subGrid.length;
+		int[][] remainingGrid;
+		
+		if (width == 1 && height == 1) {
+			spiral2Array.add(subGrid[0][0]);
+			return spiral2Array;
+		}
+		if (direction.equals("left")){
+			
+			for (int i = width - 1; i >= 0; i --) {
+				spiral2Array.add(subGrid[0][i]);
+				
+			}
+			
+			remainingGrid = new int[height - 1][width];
+			
+			for (int i = 1; i < height; i++) {
+				remainingGrid[i - 1] = subGrid[i];
+			}
+			direction = "down";
+			
+			
+		} else if (direction.equals("right")) {
+			
+			for (int i = 0; i < width; i ++) {
+				spiral2Array.add(subGrid[height - 1][i]);
+			}
+			
+			remainingGrid = new int[height - 1][width];
+			
+			for (int i = 0; i < height - 1; i++) {
+				remainingGrid[i] = subGrid[i];
+			}
+			direction = "up";
+			
+		} else if (direction.equals("down")) {
+			
+			for (int i = 0; i < height ; i ++) {
+				spiral2Array.add(subGrid[i][0]);
+			}
+			
+			remainingGrid = new int[height][width - 1];
+			
+			for (int i = 0; i < height; i++) {
+				for (int j = 1; j < width; j ++) {
+					remainingGrid[i][j - 1] = subGrid[i][j];
+				}
+				
+			}
+			direction = "right";
+			
+		} else {
+			//direction is up
+			for (int i = height - 1; i >= 0 ; i --) {
+				spiral2Array.add(subGrid[i][width - 1]);
+			}
+			
+			remainingGrid = new int[height][width - 1];
+			
+			for (int i = 0; i < height; i++) {
+				for (int j = 0; j < width - 1; j ++) {
+					remainingGrid[i][j] = subGrid[i][j];
+				}
+				
+			}
+			direction = "left";
+		}
+		return spiral2(remainingGrid, spiral2Array, direction);
+	}
+
 	
 	/**
 	 * <p>
@@ -227,7 +511,21 @@ public final class Grid {
 	 */
 	@Override
 	public String toString() {
-		return null; // TODO
+		
+		StringBuilder gridString = new StringBuilder();
+		
+		for (int i = 0; i< this.grid.length; i++) {
+			gridString.append("|");
+			for (int j = 0; j < this.grid[0].length; j++) {
+				
+				String rowString = String.format("%5d", grid[i][j]);
+				gridString.append(rowString);
+			}
+			
+			gridString.append("   |\n");
+		}
+		
+		return gridString.toString();
 	}
 	
 	// = = = test client for your own testing = = = 
@@ -239,7 +537,34 @@ public final class Grid {
 	 */
 	public static void main(String[] args) 
 	{
+		Grid testGrid = new Grid(4, 2);
+		System.out.println("Example Grid:");
+		System.out.print(testGrid);
+		Iterable<Integer> snake1 = testGrid.snake1();
+		Iterable<Integer> snake2 = testGrid.snake2();
+		Iterable<Integer> spiral1 = testGrid.spiral1();
+		Iterable<Integer> spiral2 = testGrid.spiral2();
 
+		System.out.println("Grid Traversals:");
+		System.out.println("Snake1");
+		for (Integer number: snake1) {
+			System.out.print(number + " ");
+		}
+		System.out.println();
+		System.out.println("Snake2");
+		for (Integer number: snake2) {
+			System.out.print( number + " ");
+		}
+		System.out.println();
+		System.out.println("Spiral1");
+		for (Integer number: spiral1) {
+			System.out.print(number + " ");
+		}
+		System.out.println();
+		System.out.println("Spiral2");
+		for (Integer number: spiral2) {
+			System.out.print(number + " ");
+		}
 		
 	}
 }
