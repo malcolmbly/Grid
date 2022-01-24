@@ -47,9 +47,9 @@ public class GridTest {
 	@Test
 	public void testlargestNeighborTrue2() {
 		
-		int[][] grid =  {{1,20,3}, {4,10,6}, {7,8,90}};
+		int[][] grid =  {{1}};
 		Grid testGrid = new Grid(grid);
-		Assert.assertTrue(testGrid.largestNeighbor(2,2));
+		Assert.assertTrue(testGrid.largestNeighbor(0,0));
 	}
 
 	
@@ -71,9 +71,9 @@ public class GridTest {
 	@Test
 	public void testSnake1Two() {
 		
-		int[][] grid =  {{1,2,3}, {4,5,6}, {7,8,9}};
+		int[][] grid =  {{1}};
 		Grid testGrid = new Grid(grid);
-		int[] arr = {1, 2, 3, 6, 5, 4, 7, 8, 9};
+		int[] arr = {1};
 		ArrayList<Integer> expected = new ArrayList<Integer>();
 		for (Integer num : arr) {
 			expected.add(num);
@@ -130,9 +130,9 @@ public class GridTest {
 	@Test
 	public void testSpiral1Two() {
 
-		int[][] grid =  {{1,2,3}, {4,5,6}, {7,8,9}};
+		int[][] grid =  {{1}};
 		Grid testGrid = new Grid(grid);
-		int[] arr = {1, 2, 3, 6, 9, 8, 7, 4, 5};
+		int[] arr = {1};
 		ArrayList<Integer> expected = new ArrayList<Integer>();
 		for (Integer num : arr) {
 			expected.add(num);

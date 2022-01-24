@@ -21,8 +21,8 @@ public final class Grid {
 	public Grid (int size, int n) throws IllegalArgumentException {
 		
 		this.size = size;
-		if (size <= 0) {
-			throw new IllegalArgumentException("Array size must be a positive integer");
+		if (size < 0) {
+			throw new IllegalArgumentException("Array size must be a positive integer or zero");
 		}
 		
 		this.grid = new int[size][size];
@@ -53,14 +53,10 @@ public final class Grid {
 	public Grid (int[][] array2d) {
 		
 		int row_count;
-		int col_count;
-		
-		if (array2d.length == 0 || array2d[0].length == 0) {
-			throw new IllegalArgumentException("Array passed in must not be size 0 in either dimension");
-		} else {
-			row_count = array2d.length;
-			col_count = array2d[0].length;
-		}
+		int col_count;	
+
+		row_count = array2d.length;
+		col_count = array2d[0].length;
 
 		
 		if (row_count != col_count) {
@@ -208,6 +204,11 @@ public final class Grid {
 	public Iterable<Integer> snake1() {
 		
 		ArrayList<Integer> snake1Array = new ArrayList<Integer>();
+		
+		if (this.grid.length == 0) {
+			return snake1Array;
+		}
+		
 		int rowCount = 0;
 		for (int i = 0; i < this.grid.length; i ++) {
 			
@@ -254,6 +255,11 @@ public final class Grid {
 	public Iterable<Integer> snake2() {
 		
 		ArrayList<Integer> snake2Array = new ArrayList<Integer>();
+		
+		if (this.grid.length == 0) {
+			return snake2Array;
+		}
+		
 		int colCount = 0;
 		
 		for (int j = 0; j < size; j ++) {
@@ -302,9 +308,13 @@ public final class Grid {
 	 * @return the grid elements in the specified way
 	 */
 	public Iterable<Integer> spiral1() {
-		
+
 		ArrayList<Integer> spiral1Array = new ArrayList<Integer>();
 
+		if (this.grid.length == 0) {
+			return spiral1Array;
+		}
+		
 		String direction = "right";
 		return spiral1(this.grid, spiral1Array, direction);
 	}
@@ -421,7 +431,10 @@ public final class Grid {
 	public Iterable<Integer> spiral2() {
 		
 		ArrayList<Integer> spiral2Array = new ArrayList<Integer>();
-
+		
+		if (this.grid.length == 0) {
+			return spiral2Array;
+		}
 		String direction = "down";
 		return spiral2(this.grid, spiral2Array, direction);
 	}
@@ -562,9 +575,10 @@ public final class Grid {
 	 */
 	public static void main(String[] args) 
 	{
-		Grid testGrid = new Grid(4, 2);
+		Grid testGrid = new Grid(0, 1);
 		System.out.println("Example Grid:");
 		System.out.print(testGrid);
+		
 		Iterable<Integer> snake1 = testGrid.snake1();
 		Iterable<Integer> snake2 = testGrid.snake2();
 		Iterable<Integer> spiral1 = testGrid.spiral1();
