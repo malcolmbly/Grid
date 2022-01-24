@@ -11,14 +11,7 @@ import org.junit.Test;
  *
  */
 public class GridTest {
-	
-	@Test
-	public void testSizeZeroArray() {
 		
-		Assert.assertThrows(IllegalArgumentException.class, () -> new Grid(0, 2));
-	}
-	
-	
 	
 	@Test
 	public void testlargestNeighborFalse() {

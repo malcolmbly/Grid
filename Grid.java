@@ -575,7 +575,7 @@ public final class Grid {
 	 */
 	public static void main(String[] args) 
 	{
-		Grid testGrid = new Grid(0, 1);
+		Grid testGrid = new Grid(1, 1);
 		System.out.println("Example Grid:");
 		System.out.print(testGrid);
 		
